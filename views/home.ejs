@@ -1,9 +1,12 @@
 <%- include('partials/header')-%>
 
 <h1>Home</h1>
-
 <p><%= homeStartingContent %></p>
 
-<% console.log(posts) %>
+
+<% posts.forEach(posting => { %>
+ <h1> <%= posting.title %> </h1>
+ <p> <%= posting.content %> </p> 
+<% }) %>
 
 <%- include('partials/footer') -%>
