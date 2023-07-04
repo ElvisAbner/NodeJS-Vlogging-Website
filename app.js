@@ -1,11 +1,10 @@
 const express = require("express");
+const app = express();
 const ejs = require("ejs");
 const port = process.env.PORT || 3000;
 const _ = require('lodash');
 
 const { homeStartingContent, aboutStartingContent, contactContent } = require('./content');
-
-const app = express();
 
 const posts = [];
 
@@ -24,7 +23,6 @@ app.get('/', (req, res) => {
     posts: posts
   });
 });
-
 
 app.get('/about', (req, res) => {
   res.render('about', {
@@ -64,13 +62,15 @@ app.get('/posts/:postName', (req, res) => {
     const storedTitle = _.lowerCase(post.title);
 
     if (storedTitle === requestedTitle) {
-      console.log('Match found!');
-    } else { console.log('Not a match');
-  }
+      res.render('post', {
+        title: post.title,
+        content: post.content
+      });
+    };
   });
 });
 
 //Port
-app.listen(3000, function () {
-  console.log("Server started on port 3000");
+app.listen(port, () => {
+  console.log("Server Started!!!");
 });
