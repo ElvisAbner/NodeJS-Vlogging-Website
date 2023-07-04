@@ -1,5 +1,6 @@
 const express = require("express");
 const ejs = require("ejs");
+const port = process.env.PORT || 3000;
 const _ = require('lodash');
 
 const { homeStartingContent, aboutContent, contactContent } = require(./content);
