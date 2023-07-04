@@ -1,11 +1,10 @@
 const express = require("express");
+const app = express();
 const ejs = require("ejs");
 const port = process.env.PORT || 3000;
 const _ = require('lodash');
 
 const { homeStartingContent, aboutStartingContent, contactContent } = require('./content');
-
-const app = express();
 
 const posts = [];
 
@@ -14,8 +13,8 @@ app.set('view engine', 'ejs');
 app.use(express.urlencoded({
   extended: true
 }));
-app.use(express.static("public"));
 
+app.use(express.static("public"));
 
 //Get requests
 app.get('/', (req, res) => {
@@ -24,7 +23,6 @@ app.get('/', (req, res) => {
     posts: posts
   });
 });
-
 
 app.get('/about', (req, res) => {
   res.render('about', {
