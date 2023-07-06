@@ -4,7 +4,9 @@ const ejs = require("ejs");
 const port = process.env.PORT || 3000;
 const _ = require('lodash');
 
-const { homeStartingContent, aboutStartingContent, contactContent } = require('./content');
+const { homeStartingContent,
+       aboutStartingContent,
+       contactContent } = require('./content');
 
 const posts = [];
 
