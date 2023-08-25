@@ -1,14 +1,43 @@
 const express = require("express");
+const mongoose = require('mongoose');
 const app = express();
 const ejs = require("ejs");
-const port = process.env.PORT || 3000;
 const _ = require('lodash');
+require('dotenv').config()
+
+const PORT = process.env.PORT || 3000
+
+const connectDB = async () => {
+  try {
+    const conn = await mongoose.connect(process.env.MONGO_URI);
+    console.log(`MongoDB Connected: ${conn.connection.host}`);
+  } catch (error) {
+    console.log(error);
+    process.exit(1);
+  }
+}
+
+connectDB().then(() => {
+  app.listen(PORT, () => {
+      console.log("listening for requests");
+  })
+})
+
+const postSquema = new mongoose.Schema({
+  title: {
+    type: String
+  },
+  content: {
+    type: String
+  }
+})
+
+const Post = new mongoose.model ('Post', postSquema)
 
 const { homeStartingContent,
        aboutStartingContent,
        contactContent } = require('./content');
 
-const posts = [];
 
 app.set('view engine', 'ejs');
 
@@ -18,14 +47,18 @@ app.use(express.urlencoded({
 
 app.use(express.static("public"));
 
+
 //Get requests
 app.get('/', (req, res) => {
-  res.render('home', {
-    homeStartingContent: homeStartingContent,
-    posts: posts
+  
+  Post.find({}).then((posts) => {
+    res.render('home', {
+      homeStartingContent: homeStartingContent,
+      posts: posts
+    })
   });
-});
-
+})
+  
 app.get('/about', (req, res) => {
   res.render('about', {
     aboutStartingContent: aboutStartingContent
@@ -45,20 +78,24 @@ app.get('/compose', (req, res) => {
 //Post requests 
 app.post('/compose', (req, res) => {
 
-  const post = {
-    title: req.body.postTitle,
-    content: req.body.postBody
-  };
+    postTitle = req.body.postTitle,
+    postContent = req.body.postBody
+  
+    const post = new Post ({
+      title: postTitle,
+      content: postContent
+    })
 
-  posts.push(post);
+    post.save();
 
   res.redirect('/');
 });
 
 //Route parameters
-app.get('/posts/:postName', (req, res) => {
+app.get('/posts/:postId', (req, res) => {
   
   const requestedTitle = _.lowerCase(req.params.postName);
+  const requestedPostId = req.params.postId;
 
   posts.forEach((post) => {
     const storedTitle = _.lowerCase(post.title);
@@ -70,9 +107,4 @@ app.get('/posts/:postName', (req, res) => {
       });
     };
   });
-});
-
-//Port
-app.listen(port, () => {
-  console.log("Server Started!!!");
 });
