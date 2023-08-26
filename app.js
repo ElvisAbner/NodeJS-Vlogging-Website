@@ -94,17 +94,15 @@ app.post('/compose', (req, res) => {
 //Route parameters
 app.get('/posts/:postId', (req, res) => {
   
-  const requestedTitle = _.lowerCase(req.params.postName);
   const requestedPostId = req.params.postId;
-
-  posts.forEach((post) => {
-    const storedTitle = _.lowerCase(post.title);
-
-    if (storedTitle === requestedTitle) {
-      res.render('post', {
-        title: post.title,
-        content: post.content
-      });
-    };
+  
+  Post.findOne({_id: requestedPostId}).then((post) => {
+     res.render('post', {
+       title: post.title,
+       content: post.content
+     });
+  })
+  .catch((err) => {
+    console.log(err)
   });
 });
