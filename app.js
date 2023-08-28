@@ -7,6 +7,7 @@ require('dotenv').config()
 
 const PORT = process.env.PORT || 3000
 
+//Mongoose connection
 const connectDB = async () => {
   try {
     const conn = await mongoose.connect(process.env.MONGO_URI);
@@ -23,6 +24,7 @@ connectDB().then(() => {
   })
 })
 
+//Mongoose squemas
 const postSquema = new mongoose.Schema({
   title: {
     type: String
@@ -34,6 +36,7 @@ const postSquema = new mongoose.Schema({
 
 const Post = new mongoose.model ('Post', postSquema)
 
+//Default starting contents
 const { homeStartingContent,
        aboutStartingContent,
        contactContent } = require('./content');
@@ -46,7 +49,6 @@ app.use(express.urlencoded({
 }));
 
 app.use(express.static("public"));
-
 
 //Get requests
 app.get('/', (req, res) => {
@@ -106,3 +108,4 @@ app.get('/posts/:postId', (req, res) => {
     console.log(err)
   });
 });
+
